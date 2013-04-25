@@ -8,49 +8,46 @@ import net.vksn.bedrock.model.Entity;
 import net.vksn.bedrock.query.Query;
 import net.vksn.bedrock.services.GenericService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractGenericService<T extends Entity> implements GenericService<T> {
 
-	protected GenericDAO<T> dao;
-	
-	public void setDao(GenericDAO<T> dao) {
-		this.dao = dao;
-	}
-	
+	public abstract GenericDAO<T> getDAO();
+		
 	@Transactional(readOnly = true)
 	@Override
 	public Collection<T> getByQuery(Query query) {
-		return dao.getByQuery(query);
+		return getDAO().getByQuery(query);
 	}
 
 	@Transactional
 	@Override
 	public void store(T entity) throws EntityNotFoundException {
-		dao.store(entity);
+		getDAO().store(entity);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public T get(int id) throws EntityNotFoundException {
-		return this.dao.get(id, null);
+		return this.getDAO().get(id, null);
 	}
 	
 	@Transactional
 	@Override
 	public void remove(int id) throws EntityNotFoundException {
-		this.dao.remove(id);
+		this.getDAO().remove(id);
 	}
 
 	@Transactional
 	@Override
 	public void delete(int id) throws EntityNotFoundException {
-		this.dao.delete(id);
+		this.getDAO().delete(id);
 	}
 
 	@Transactional
 	@Override
 	public void undelete(int id) throws EntityNotFoundException {
-		this.dao.undelete(id);
+		this.getDAO().undelete(id);
 	}
 }
